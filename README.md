@@ -1,3 +1,6 @@
+[![Maintainability](https://qlty.sh/gh/VaDKustiK/projects/practice1/maintainability.svg)](https://qlty.sh/gh/VaDKustiK/projects/practice1)
+
+
 # ООО «Обувь» — Обувной магазин
 
 Веб приложение обувного магазина, созданное с использованием Flask, SQLite, и Bootstrap 5.
