@@ -1,0 +1,218 @@
+/*
+  ООО «Обувь» Brand Styles
+  
+  Style guide colors:
+    Main background:      #FFFFFF  (Bootstrap default — no override needed)
+    Secondary background: #7FFF00  (navbar, table headers, secondary buttons)
+    Accent:               #00FA9A  (primary action buttons)
+    High-discount row:    #2E8B57
+    Out-of-stock row:     #ADD8E6
+*/
+
+/* Override Bootstrap's font to Times New Roman everywhere */
+body, .btn, input, select, textarea, th, td {
+    font-family: "Times New Roman", Times, serif !important;
+}
+
+/* Navbar brand color */
+.navbar-brand-bg {
+    background-color: #7FFF00 !important;
+}
+
+/* Custom button colors (used instead of btn-primary / btn-success) */
+.btn-accent {
+    background-color: #00FA9A;
+    border-color: #00FA9A;
+    color: #000;
+}
+.btn-accent:hover { 
+    background-color: #00e589; 
+    border-color: #00e589; 
+    color: #000; 
+}
+
+.btn-secondary-brand {
+    background-color: #7FFF00;
+    border-color: #7FFF00;
+    color: #000;
+}
+.btn-secondary-brand:hover { 
+    background-color: #6fe600; 
+    border-color: #6fe600; 
+    color: #000; 
+}
+
+/* Table header brand color */
+thead.brand-header th {
+    background-color: #7FFF00;
+    color: #000;
+}
+
+/* Product row color rules — applied via class on <tr> */
+tr.row-high-discount td { 
+    background-color: #2E8B57 !important; 
+    color: #fff !important; 
+}
+
+tr.row-no-stock td { 
+    background-color: #ADD8E6 !important; 
+}
+
+/* Price display */
+.price-original { 
+    text-decoration: line-through; 
+    color: red; 
+}
+
+.price-final { 
+    color: #000; 
+    font-weight: bold; 
+}
+
+/* Product thumbnail in table */
+.product-thumb {
+    width: 140px;
+    height: 105px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background-color: #fff;
+}
+
+/* Catalog-style product list */
+.table-responsive .table th:first-child,
+.table-responsive .table td:first-child {
+    width: 180px;
+}
+
+.table-responsive .table th:last-child,
+.table-responsive .table td:last-child {
+    width: 180px;
+}
+
+.product-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.product-summary-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    line-height: 1.35;
+}
+
+.product-summary-title {
+    align-items: baseline;
+    gap: 0.6rem;
+}
+
+.product-category {
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #2f4f4f;
+}
+
+.product-name {
+    font-size: 1.15rem;
+    font-weight: bold;
+}
+
+.product-label {
+    font-weight: bold;
+}
+
+.product-discount-cell {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.product-discount-badge {
+    font-size: 1rem;
+    padding: 0.55rem 0.8rem;
+}
+
+.product-discount-none {
+    font-weight: bold;
+    color: #6c757d;
+}
+
+.product-summary-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.35rem;
+}
+
+.product-summary-actions form {
+    margin: 0;
+}
+
+.order-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.order-summary-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    line-height: 1.35;
+}
+
+.order-label {
+    font-weight: bold;
+}
+
+.order-delivery-cell {
+    vertical-align: middle;
+    min-width: 220px;
+}
+
+.order-delivery-date {
+    font-size: 1.05rem;
+    font-weight: bold;
+}
+
+.order-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.order-actions form {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .product-thumb {
+        width: 100px;
+        height: 76px;
+    }
+
+    .table-responsive .table th:first-child,
+    .table-responsive .table td:first-child,
+    .table-responsive .table th:last-child,
+    .table-responsive .table td:last-child {
+        width: auto;
+    }
+
+    .product-name {
+        font-size: 1rem;
+    }
+
+    .order-delivery-cell {
+        min-width: 160px;
+    }
+}
+
+/* Logo on login page — never distort */
+.login-logo {
+    max-width: 200px;
+    height: auto;
+    display: block;
+    margin: 0 auto 1rem;
+}

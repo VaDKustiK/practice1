@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% block title %}Список товаров — ООО «Обувь»{% endblock %}
+{% block page_title %}Список товаров{% endblock %}
+
+{% block content %}
+
+{% if session.role in ['Менеджер', 'Администратор'] %}
+<div class="row g-2 mb-3 align-items-center">
+    <div class="col-auto">
+        <input type="text" id="search-input" class="form-control"
+               placeholder="Поиск" value="{{ search }}" style="width: 240px;">
+    </div>
+    <div class="col-auto">
+        <select id="supplier-select" class="form-select">
+            <option value="">Все поставщики</option>
+            {% for s in suppliers %}
+            <option value="{{ s.supplier_id }}"
+                {% if selected_supplier == s.supplier_id|string %}selected{% endif %}>
+                {{ s.supplier_name }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-auto">
+        <select id="sort-select" class="form-select">
+            <option value="">Без сортировки</option>
+            <option value="asc"  {% if sort == 'asc'  %}selected{% endif %}>
+                Остаток ↓
+            </option>
+            <option value="desc" {% if sort == 'desc' %}selected{% endif %}>
+                Остаток ↑
+            </option>
+        </select>
+    </div>
+</div>
+{% endif %}
+
+<div class="mb-3 d-flex gap-2">
+    {% if session.role == 'Администратор' %}
+        <a href="{{ url_for('product_add') }}" class="btn btn-accent">
+            <i class="bi bi-plus-circle"></i> Добавить товар
+        </a>
+    {% endif %}
+    {% if session.role in ['Менеджер', 'Администратор'] %}
+        <a href="{{ url_for('orders') }}" class="btn btn-secondary-brand">
+            <i class="bi bi-bag-check"></i> Заказы
+        </a>
+    {% endif %}
+</div>
+
+<div class="table-responsive">
+<table class="table table-bordered table-hover align-middle">
+    <thead class="brand-header">
+        <tr>
+            <th>Фото</th>
+            <th>О товаре</th>
+            <th>Действующая скидка</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for p in products %}
+        {% set row_class = '' %}
+        {% if p.stock_qty == 0 %}
+            {% set row_class = 'row-no-stock' %}
+        {% elif p.discount > 15 %}
+            {% set row_class = 'row-high-discount' %}
+        {% endif %}
+        <tr class="{{ row_class }}"
+            data-search="{{ (p.name ~ ' ' ~ p.article ~ ' ' ~ (p.description or '') ~ ' ' ~ p.manufacturer_name ~ ' ' ~ p.supplier_name ~ ' ' ~ p.category_name)|lower }}"
+            data-supplier-id="{{ p.supplier_id }}"
+            data-stock-qty="{{ p.stock_qty }}">
+
+        <td>
+            {% set placeholder_image = url_for('static', filename='images/picture.png') %}
+            <img class="product-thumb"
+                  src="{{ url_for('static', filename=p.photo_path.replace('\\', '/').replace('static/', '')) if p.photo_path else placeholder_image }}"
+                 data-fallback-src="{{ placeholder_image }}">
+        </td>
+        <td>
+            <div class="product-summary">
+                <div class="product-summary-line product-summary-title">
+                    <span class="product-category">{{ p.category_name }}</span>
+                    <span class="product-name">{{ p.name }}</span>
+                </div>
+                <div class="product-summary-line">
+                    <span class="product-label">Описание товара:</span>
+                    <span>{{ p.description or '—' }}</span>
+                </div>
+                <div class="product-summary-line">
+                    <span class="product-label">Производитель:</span>
+                    <span>{{ p.manufacturer_name }}</span>
+                </div>
+                <div class="product-summary-line">
+                    <span class="product-label">Поставщик:</span>
+                    <span>{{ p.supplier_name }}</span>
+                </div>
+                <div class="product-summary-line">
+                    <span class="product-label">Цена:</span>
+                    <span>
+                        {% if p.discount > 0 %}
+                            <span class="price-original">{{ "%.2f"|format(p.price) }} р.</span>
+                            <span class="price-final">{{ "%.2f"|format(p.price * (1 - p.discount / 100)) }} р.</span>
+                        {% else %}
+                            <span class="price-final">{{ "%.2f"|format(p.price) }} р.</span>
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="product-summary-line">
+                    <span class="product-label">Единица измерения:</span>
+                    <span>{{ p.unit }}</span>
+                </div>
+                <div class="product-summary-line">
+                    <span class="product-label">Количество на складе:</span>
+                    <span>{{ p.stock_qty }}</span>
+                </div>
+                {% if session.role == 'Администратор' %}
+                <div class="product-summary-actions">
+                    <a href="{{ url_for('product_edit', product_id=p.product_id) }}"
+                       class="btn btn-sm btn-secondary-brand">
+                        <i class="bi bi-pencil"></i> Изменить
+                    </a>
+                    <form method="POST"
+                          action="{{ url_for('product_delete', product_id=p.product_id) }}"
+                          class="d-inline"
+                          onsubmit="return confirm('Удалить товар «{{ p.name }}»?')">
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            <i class="bi bi-trash"></i> Удалить
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        </td>
+        <td class="product-discount-cell">
+            {% if p.discount > 0 %}
+                <span class="badge bg-danger product-discount-badge">{{ p.discount }}%</span>
+            {% else %}
+                <span class="product-discount-none">0%</span>
+            {% endif %}
+        </td>
+
+        </tr>
+    {% endfor %}
+        <tr id="no-results-row" class="{% if products %}d-none{% endif %}">
+            <td colspan="3" class="text-center text-muted">
+                Товары не найдены
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{% if session.role in ['Менеджер', 'Администратор'] %}
+<script>
+const searchInput = document.getElementById("search-input");
+const supplierSelect = document.getElementById("supplier-select");
+const sortSelect = document.getElementById("sort-select");
+const tableBody = document.querySelector("table tbody");
+const rows = Array.from(tableBody.querySelectorAll("tr[data-search]"));
+const originalOrder = [...rows];  // snapshot of initial server-rendered order
+const noResultsRow = document.getElementById("no-results-row");
+
+document.querySelectorAll(".product-thumb").forEach((img) => {
+    img.addEventListener("error", function handleImageError() {
+        const fallbackSrc = this.dataset.fallbackSrc;
+        if (fallbackSrc && this.src !== fallbackSrc) {
+            this.src = fallbackSrc;
+        }
+    });
+});
+
+function applyFiltersRealtime() {
+    const searchValue = searchInput.value.trim().toLowerCase();
+    const supplierValue = supplierSelect.value;
+    const sortValue = sortSelect.value;
+    let visibleCount = 0;
+
+    rows.forEach((row) => {
+        const matchesSearch = !searchValue || row.dataset.search.includes(searchValue);
+        const matchesSupplier = !supplierValue || row.dataset.supplierId === supplierValue;
+        const isVisible = matchesSearch && matchesSupplier;
+
+        row.style.display = isVisible ? "" : "none";
+        if (isVisible) {
+            visibleCount += 1;
+        }
+    });
+
+    const visibleRows = rows.filter((row) => row.style.display !== "none");
+    if (sortValue === "asc" || sortValue === "desc") {
+        visibleRows.sort((a, b) => Number(a.dataset.stockQty) - Number(b.dataset.stockQty));
+        if (sortValue === "desc") {
+            visibleRows.reverse();
+        }
+        visibleRows.forEach((row) => tableBody.appendChild(row));
+    } else {
+        // Re-append all rows in original order
+        // hidden rows stay hidden via display:none.
+        originalOrder.forEach((row) => tableBody.appendChild(row));
+    }
+
+    if (visibleCount === 0) {
+        noResultsRow.classList.remove("d-none");
+    } else {
+        noResultsRow.classList.add("d-none");
+    }
+}
+
+searchInput.addEventListener("input", applyFiltersRealtime);
+supplierSelect.addEventListener("change", applyFiltersRealtime);
+sortSelect.addEventListener("change", applyFiltersRealtime);
+
+applyFiltersRealtime();
+</script>
+{% endif %}
+{% endblock %}

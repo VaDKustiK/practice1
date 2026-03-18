@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Заказы — ООО «Обувь»{% endblock %}
+{% block page_title %}Заказы{% endblock %}
+
+{% block content %}
+<div class="d-flex gap-2 mb-3">
+    {% if session.role == 'Администратор' %}
+        <a href="{{ url_for('order_add') }}" class="btn btn-accent">
+            <i class="bi bi-plus-circle"></i> Добавить заказ
+        </a>
+    {% endif %}
+    <a href="{{ url_for('products') }}" class="btn btn-secondary-brand">
+        <i class="bi bi-arrow-left"></i> Назад к товарам
+    </a>
+</div>
+
+<div class="table-responsive">
+<table class="table table-bordered table-hover align-middle">
+    <thead class="brand-header">
+        <tr>
+            <th>Заказ</th>
+            <th>Дата доставки</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for o in orders %}
+        <tr>
+            <td>
+                <div class="order-summary">
+                    <div class="order-summary-line">
+                        <span class="order-label">Артикул заказа:</span>
+                        <span>{{ o.articles }}</span>
+                    </div>
+                    <div class="order-summary-line">
+                        <span class="order-label">Статус заказа:</span>
+                        {% if o.status == 'Завершен' %}
+                            <span class="badge bg-success">{{ o.status }}</span>
+                        {% elif o.status == 'Новый' %}
+                            <span class="badge bg-primary">{{ o.status }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ o.status }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="order-summary-line">
+                        <span class="order-label">Адрес пункта выдачи:</span>
+                        <span>{{ o.address }}</span>
+                    </div>
+                    <div class="order-summary-line">
+                        <span class="order-label">Дата заказа:</span>
+                        <span>{{ o.order_date }}</span>
+                    </div>
+                </div>
+            </td>
+            <td class="order-delivery-cell">
+                <div class="order-delivery-date">{{ o.delivery_date }}</div>
+                {% if session.role == 'Администратор' %}
+                <div class="order-actions mt-3">
+                    <a href="{{ url_for('order_edit', order_id=o.order_id) }}"
+                       class="btn btn-sm btn-secondary-brand">
+                        <i class="bi bi-pencil"></i> Изменить
+                    </a>
+                    <form method="POST"
+                          action="{{ url_for('order_delete', order_id=o.order_id) }}"
+                          class="d-inline"
+                          onsubmit="return confirm('Удалить заказ № {{ o.order_id }}?')">
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            <i class="bi bi-trash"></i> Удалить
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="2" class="text-center text-muted">Заказов нет</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

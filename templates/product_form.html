@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Редактирование' if product else 'Добавление' }} товара{% endblock %}
+{% block page_title %}{{ 'Редактирование товара' if product else 'Добавление товара' }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+<div class="col-md-7">
+<div class="card shadow-sm">
+<div class="card-body p-4">
+
+<form method="POST" enctype="multipart/form-data">
+
+  {% if product %}
+  <div class="mb-3">
+    <label class="form-label fw-bold">ID товара (только для чтения)</label>
+    <input type="text" class="form-control" value="{{ product.product_id }}" readonly>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label fw-bold">Артикул (только для чтения)</label>
+    <input type="text" class="form-control" value="{{ product.article }}" readonly>
+    <input type="hidden" name="article" value="{{ product.article }}">
+  </div>
+  {% else %}
+  <div class="mb-3">
+    <label class="form-label fw-bold">Артикул *</label>
+    <input type="text" name="article" class="form-control" required>
+  </div>
+  {% endif %}
+
+  <div class="mb-3">
+    <label class="form-label fw-bold">Наименование товара *</label>
+    <input type="text" name="name" class="form-control"
+           value="{{ product.name if product else '' }}" required>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label class="form-label fw-bold">Категория *</label>
+      <select name="category_id" class="form-select" required>
+        {% for c in categories %}
+        <option value="{{ c.category_id }}"
+            {% if product and product.category_id == c.category_id %}selected{% endif %}>
+            {{ c.category_name }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label fw-bold">Производитель *</label>
+      <select name="manufacturer_id" class="form-select" required>
+        {% for m in manufacturers %}
+        <option value="{{ m.manufacturer_id }}"
+            {% if product and product.manufacturer_id == m.manufacturer_id %}selected{% endif %}>
+            {{ m.manufacturer_name }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label fw-bold">Поставщик *</label>
+    <select name="supplier_id" class="form-select" required>
+      {% for s in suppliers %}
+      <option value="{{ s.supplier_id }}"
+          {% if product and product.supplier_id == s.supplier_id %}selected{% endif %}>
+          {{ s.supplier_name }}
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label fw-bold">Описание</label>
+    <textarea name="description" class="form-control" rows="3">{{- product.description if product else '' -}}</textarea>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4 mb-3">
+      <label class="form-label fw-bold">Цена (руб.) *</label>
+      <input type="number" name="price" class="form-control"
+             step="0.01" min="0"
+             value="{{ product.price if product else '' }}" required>
+    </div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label fw-bold">Ед. измерения *</label>
+      <input type="text" name="unit" class="form-control"
+             value="{{ product.unit if product else 'шт.' }}" required>
+    </div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label fw-bold">Остаток на складе *</label>
+      <input type="number" name="stock_qty" class="form-control"
+             min="0" value="{{ product.stock_qty if product else 0 }}" required>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label fw-bold">Скидка (%)</label>
+    <input type="number" name="discount" class="form-control"
+           min="0" max="100"
+           value="{{ product.discount if product else 0 }}">
+  </div>
+
+  {% set placeholder_image = url_for('static', filename='images/picture.png') %}
+
+  <div class="mb-4">
+    <label class="form-label fw-bold">Фото товара</label><br>
+    <img id="photo-preview"
+          src="{{ url_for('static', filename=product.photo_path.replace('\\', '/').replace('static/', '')) if product and product.photo_path else placeholder_image }}"
+         style="width:150px; height:100px; object-fit:cover; border-radius:4px; margin-bottom:8px;"
+         onerror="this.src='{{ placeholder_image }}'">
+    <input type="file" name="photo" class="form-control" accept="image/*"
+           onchange="previewPhoto(this)">
+    <small class="text-muted">Изображение будет масштабировано до 300×200 пикселей.</small>
+  </div>
+
+  <div class="d-flex gap-2">
+    <button type="submit" class="btn btn-accent">
+        <i class="bi bi-floppy"></i> Сохранить
+    </button>
+    {% if product %}
+    <form method="POST" action="{{ url_for('product_edit_unlock') }}" class="d-inline">
+      <button type="submit" class="btn btn-secondary-brand">
+          <i class="bi bi-x-circle"></i> Отмена
+      </button>
+    </form>
+    {% else %}
+    <a href="{{ url_for('products') }}" class="btn btn-secondary-brand">
+        <i class="bi bi-x-circle"></i> Отмена
+    </a>
+    {% endif %}
+  </div>
+
+</form>
+</div></div></div></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function previewPhoto(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => document.getElementById("photo-preview").src = e.target.result;
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+{% endblock %}

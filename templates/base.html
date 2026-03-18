@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}ООО «Обувь»{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+          rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- <link rel="icon" href="{{ url_for('static', filename='images/icon.ico') }}" type="image/x-icon"> -->
+</head>
+<body class="bg-white">
+
+{% if session.get('role') %}
+<nav class="navbar px-3 py-2 navbar-brand-bg">
+    <span class="fw-bold fs-5">
+        ООО «Обувь» — {% block page_title %}{% endblock %}
+    </span>
+    <span>
+        <i class="bi bi-person-circle"></i>
+        <strong>{{ session.get('full_name', '') }}</strong>
+        &nbsp;
+        <a href="{{ url_for('logout') }}" class="btn btn-sm btn-outline-dark">
+            <i class="bi bi-box-arrow-right"></i> Выйти
+        </a>
+    </span>
+</nav>
+{% endif %}
+
+<div class="container-fluid px-3 mt-2">
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  {% endfor %}
+{% endwith %}
+</div>
+
+<div class="container-fluid px-3 py-3">
+    {% block content %}{% endblock %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Редактирование' if order else 'Добавление' }} заказа{% endblock %}
+{% block page_title %}{{ 'Редактирование заказа' if order else 'Добавление заказа' }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+<div class="col-md-6">
+<div class="card shadow-sm">
+<div class="card-body p-4">
+
+<form method="POST">
+
+  <div class="mb-3">
+    <label class="form-label fw-bold">Артикул(ы) товара *</label>
+    <input type="text" name="articles" class="form-control"
+           value="{{ order.articles if order else '' }}"
+           placeholder="Напр.: A112T4, 2, F635R4, 2" required>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label fw-bold">Статус заказа *</label>
+    <select name="status" class="form-select" required>
+      {% for s in ['Новый', 'Завершен', 'Отменен'] %}
+      <option value="{{ s }}"
+          {% if order and order.status == s %}selected{% endif %}>{{ s }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label fw-bold">Пункт выдачи *</label>
+    <select name="pickup_point_id" class="form-select" required>
+      {% for pp in pickup_points %}
+      <option value="{{ pp.pickup_point_id }}"
+          {% if order and order.pickup_point_id == pp.pickup_point_id %}selected{% endif %}>
+          {{ pp.address }}
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label class="form-label fw-bold">Дата заказа * (ДД.ММ.ГГГГ)</label>
+      <input type="text" name="order_date" class="form-control"
+             value="{{ order.order_date if order else '' }}"
+             placeholder="27.02.2025" required>
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label fw-bold">Дата доставки * (ДД.ММ.ГГГГ)</label>
+      <input type="text" name="delivery_date" class="form-control"
+             value="{{ order.delivery_date if order else '' }}"
+             placeholder="20.04.2025" required>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label fw-bold">ФИО клиента *</label>
+    <select name="user_id" class="form-select" required>
+      {% for u in clients %}
+      <option value="{{ u.user_id }}"
+          {% if order and order.user_id == u.user_id %}selected{% endif %}>
+          {{ u.full_name }}
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="mb-4">
+    <label class="form-label fw-bold">Код для получения *</label>
+    <input type="text" name="pickup_code" class="form-control"
+           value="{{ order.pickup_code if order else '' }}" required>
+  </div>
+
+  <div class="d-flex gap-2">
+    <button type="submit" class="btn btn-accent">
+        <i class="bi bi-floppy"></i> Сохранить
+    </button>
+    <a href="{{ url_for('orders') }}" class="btn btn-secondary-brand">
+        <i class="bi bi-x-circle"></i> Отмена
+    </a>
+  </div>
+
+</form>
+</div></div></div></div>
+{% endblock %}
