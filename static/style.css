@@ -1,25 +1,11 @@
-/*
-  ООО «Обувь» Brand Styles
-  
-  Style guide colors:
-    Main background:      #FFFFFF  (Bootstrap default — no override needed)
-    Secondary background: #7FFF00  (navbar, table headers, secondary buttons)
-    Accent:               #00FA9A  (primary action buttons)
-    High-discount row:    #2E8B57
-    Out-of-stock row:     #ADD8E6
-*/
-
-/* Override Bootstrap's font to Times New Roman everywhere */
 body, .btn, input, select, textarea, th, td {
     font-family: "Times New Roman", Times, serif !important;
 }
 
-/* Navbar brand color */
 .navbar-brand-bg {
     background-color: #7FFF00 !important;
 }
 
-/* Custom button colors (used instead of btn-primary / btn-success) */
 .btn-accent {
     background-color: #00FA9A;
     border-color: #00FA9A;
@@ -42,13 +28,11 @@ body, .btn, input, select, textarea, th, td {
     color: #000; 
 }
 
-/* Table header brand color */
 thead.brand-header th {
     background-color: #7FFF00;
     color: #000;
 }
 
-/* Product row color rules — applied via class on <tr> */
 tr.row-high-discount td { 
     background-color: #2E8B57 !important; 
     color: #fff !important; 
@@ -58,7 +42,6 @@ tr.row-no-stock td {
     background-color: #ADD8E6 !important; 
 }
 
-/* Price display */
 .price-original { 
     text-decoration: line-through; 
     color: red; 
@@ -69,7 +52,6 @@ tr.row-no-stock td {
     font-weight: bold; 
 }
 
-/* Product thumbnail in table */
 .product-thumb {
     width: 140px;
     height: 105px;
@@ -79,7 +61,6 @@ tr.row-no-stock td {
     background-color: #fff;
 }
 
-/* Catalog-style product list */
 .table-responsive .table th:first-child,
 .table-responsive .table td:first-child {
     width: 180px;
@@ -209,7 +190,6 @@ tr.row-no-stock td {
     }
 }
 
-/* Logo on login page — never distort */
 .login-logo {
     max-width: 200px;
     height: auto;

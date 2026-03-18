@@ -197,8 +197,6 @@ function applyFiltersRealtime() {
         }
         visibleRows.forEach((row) => tableBody.appendChild(row));
     } else {
-        // Re-append all rows in original order
-        // hidden rows stay hidden via display:none.
         originalOrder.forEach((row) => tableBody.appendChild(row));
     }
 

@@ -173,7 +173,7 @@ def add_product(data):
         data['discount'],
         data['stock_qty'],
         data.get('description'),
-        data.get('photo_path')
+        data.get('photo_path') # not required, can return None
     ))
 
     conn.commit()
